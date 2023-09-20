@@ -1,0 +1,41 @@
+{
+  "name": "realestate-app",
+  "version": "1.0.0",
+  "description": "Realestate App for appartment sale or rent.",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server server.js",
+    "dev": "nodemon server server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AzimMahmud/realestate-app.git"
+  },
+  "keywords": [
+    "Realestate",
+    "Listing",
+    "Appartment",
+    "Rent",
+    "and",
+    "Sell"
+  ],
+  "author": "Azim Mahmud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AzimMahmud/realestate-app/issues"
+  },
+  "homepage": "https://github.com/AzimMahmud/realestate-app#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "mongoose": "^7.5.2",
+    "morgan": "^1.10.0",
+    "node-geocoder": "^4.2.0",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
