@@ -31,7 +31,7 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Mount Routes
-// app.use("/api/v1/bootcamps", require("./routes/bootcamps"));
+app.use("/api/v1/properties", require("./routes/properties"));
 // app.use("/api/v1/courses", require("./routes/courses"));
 
 // Error Handle
