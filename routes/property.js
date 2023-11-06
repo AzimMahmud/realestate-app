@@ -9,7 +9,7 @@ const {
   propertyPhotoUpload
 } = require("../controllers/propertyController");
 
-const advancedResults = require("../middleware/advancedResult");
+const advancedResults = require("../middlewares/advancedResult");
 const Property = require("../models/Property");
 
 // Inclued other resource routers
