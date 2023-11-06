@@ -5,7 +5,15 @@ const morgan = require("morgan");
 const fileUpload = require("express-fileupload");
 const colors = require("colors");
 const connectDB = require("./config/db");
-const errorHandler = require("./middlewares/error");
+const errorHandler = require("./middleware/error");
+
+
+// Route files
+const properties = require('./routes/properties');
+const auth = require('./routes/auth');
+const users = require('./routes/users');
+
+
 
 // Load env file
 dotenv.config({ path: "./config/config.env" });
@@ -31,8 +39,9 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Mount Routes
-app.use("/api/v1/properties", require("./routes/properties"));
-// app.use("/api/v1/courses", require("./routes/courses"));
+app.use("/api/v1/properties", properties);
+app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
 
 // Error Handle
 app.use(errorHandler);

@@ -7,9 +7,9 @@ const {
   deleteProperty,
   getPropertiesWithInRadius,
   propertyPhotoUpload
-} = require("../controllers/propertyController");
+} = require("../controllers/properties");
 
-const advancedResults = require("../middlewares/advancedResult");
+const advancedResults = require("../middleware/advancedResults");
 const Property = require("../models/Property");
 
 // Inclued other resource routers
