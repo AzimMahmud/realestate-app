@@ -37,8 +37,8 @@ exports.getProperty = asyncHandler(async (req, res, next) => {
 // @route      POST /api/v1/properties
 // @access     Private
 exports.createProperty = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
   const { _id } = await Property.create(req.body);
-
   res.status(201).json({
     success: true,
     message: "Create new property",

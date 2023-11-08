@@ -2,25 +2,22 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const fileUpload = require("express-fileupload");
+const upload = require("express-fileupload");
 const colors = require("colors");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 
-
 // Route files
-const properties = require('./routes/properties');
-const auth = require('./routes/auth');
-const users = require('./routes/users');
-
-
+const properties = require("./routes/properties");
+const auth = require("./routes/auth");
+const users = require("./routes/users");
+const fileUpload = require("./routes/fileupload");
 
 // Load env file
 dotenv.config({ path: "./config/config.env" });
 
 // Connect to MongoDb
 connectDB();
-
 
 const app = express();
 
@@ -33,15 +30,16 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // File Upload
-app.use(fileUpload());
+app.use(upload());
 
 // Set Static Folder
 app.use(express.static(path.join(__dirname, "public")));
 
 // Mount Routes
 app.use("/api/v1/properties", properties);
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/users', users);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/users", users);
+app.use("/api/v1/fileupload", fileUpload);
 
 // Error Handle
 app.use(errorHandler);
@@ -57,6 +55,6 @@ const server = app.listen(
 // Handle unhandle rejections
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error : ${err.message}`.bgRed.white);
-  // Close server &  exit process
-  // server.close(() => process.exit());
+  //Close server &  exit process
+  server.close(() => process.exit());
 });
