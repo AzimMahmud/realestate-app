@@ -1,5 +1,7 @@
 const path = require("path");
 const express = require("express");
+const cors = require('cors');
+
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const upload = require("express-fileupload");
@@ -23,6 +25,7 @@ const app = express();
 
 // Body Parse
 app.use(express.json());
+app.use(cors());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
