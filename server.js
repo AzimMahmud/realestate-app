@@ -1,6 +1,6 @@
 const path = require("path");
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 
 const dotenv = require("dotenv");
 const morgan = require("morgan");
@@ -11,6 +11,8 @@ const errorHandler = require("./middleware/error");
 
 // Route files
 const properties = require("./routes/properties");
+const reviews = require("./routes/reviews");
+const schedules = require("./routes/schedules");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const fileUpload = require("./routes/fileupload");
@@ -40,6 +42,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Mount Routes
 app.use("/api/v1/properties", properties);
+app.use("/api/v1/reviews", reviews);
+app.use("/api/v1/schedules", schedules);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/users", users);
 app.use("/api/v1/fileupload", fileUpload);

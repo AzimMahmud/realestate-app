@@ -50,7 +50,7 @@ const PropertySchema = new mongoose.Schema(
       max: [10, "Rating must can not be more than 10"],
     },
     price: Number,
-    yearlyTaxtRate: Number,
+    yearlyTaxRate: Number,
     homeOwnerAssociationFee: Number,
     afterPriceLabel: Number,
     beforePriceLabel: Number,
@@ -79,6 +79,15 @@ const PropertySchema = new mongoose.Schema(
     exteriorMaterial: String,
     structureType: String,
     floorsNo: Number,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true
+    }
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -111,6 +120,21 @@ PropertySchema.pre("save", function (next) {
 //   this.address = undefined;
 //   next();
 // });
+
+// Cascade delete reviews when a property is deleted
+PropertySchema.pre('remove', async function(next) {
+  console.log(`Reviews being removed from property ${this._id}`);
+  await this.model('Review').deleteMany({ bootcamp: this._id });
+  next();
+});
+
+// Reverse populate with virtuals
+PropertySchema.virtual('reviewies', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'property',
+  justOne: false
+});
 
 
 
