@@ -41,7 +41,7 @@ const PropertySchema = new mongoose.Schema(
       street: String,
       city: String,
       state: String,
-      zipcode: String,
+      zipCode: String,
       country: String,
     },
     averageRating: {
@@ -69,11 +69,12 @@ const PropertySchema = new mongoose.Schema(
     lotSize: Number,
     rooms: Number,
     bedRooms: Number,
+    bathrooms: Number,
     customID: String,
     garages: Number,
     garageSize: Number,
     yearBuilt: Number,
-    availableForm: Date,
+    availableFrom: Date,
     basement: String,
     roofing: String,
     extraDetails: String,
@@ -83,13 +84,13 @@ const PropertySchema = new mongoose.Schema(
     propertyStatus: String,
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: true
-    }
+      ref: "User",
+      required: true,
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -103,25 +104,25 @@ PropertySchema.pre("save", function (next) {
   next();
 });
 
-// // Geocode & create location field
-// PropertySchema.pre("save", async function (next) {
-//   console.log(this.address);
-//   const loc = await geocoder.geocode(this.address);
-//   this.location = {
-//     type: "Point",
-//     coordinates: [loc[0].longitude, loc[0].latitude],
-//     formattedAddress: loc[0].formattedAddress,
-//     street: loc[0].streetName,
-//     city: loc[0].city,
-//     state: loc[0].stateCode,
-//     zipcode: loc[0].zipcode,
-//     country: loc[0].countryCode,
-//   };
+// Geocode & create location field
+PropertySchema.pre("save", async function (next) {
+  console.log(this.address);
+  const loc = await geocoder.geocode(this.address);
+  this.location = {
+    type: "Point",
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress,
+    street: loc[0].streetName,
+    city: loc[0].city,
+    state: loc[0].stateCode,
+    zipCode: loc[0].zipcode,
+    country: loc[0].countryCode,
+  };
 
-//   // Do not save address in db
-//   this.address = undefined;
-//   next();
-// });
+  // Do not save address in db
+  this.address = undefined;
+  next();
+});
 
 // Cascade delete reviews when a property is deleted
 PropertySchema.pre('remove', async function(next) {
