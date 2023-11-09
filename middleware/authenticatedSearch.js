@@ -1,11 +1,13 @@
 /** @format */
+const { getUserInfoByToken } = require("../utils");
+const authenticatedSearch = (model, populate) => async (req, res, next) => {
+  const userId = await getUserInfoByToken(req);
 
-const advancedResults = (model, populate) => async (req, res, next) => {
   let query;
 
   console.log(req.query);
   // Copy req.query
-  const reqQuery = { ...req.query };
+  const reqQuery = { ...req.query, user: userId };
 
   // Fields to exclude
   const removeFields = ["select", "sort", "page", "limit"];
@@ -83,4 +85,4 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   next();
 };
 
-module.exports = advancedResults;
+module.exports = authenticatedSearch;
