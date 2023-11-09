@@ -50,7 +50,7 @@ const PropertySchema = new mongoose.Schema(
       max: [10, "Rating must can not be more than 10"],
     },
     price: Number,
-    yearlyTaxtRate: Number,
+    yearlyTaxRate: Number,
     homeOwnerAssociationFee: Number,
     afterPriceLabel: Number,
     beforePriceLabel: Number,
@@ -64,6 +64,7 @@ const PropertySchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    videos: [],
     size: Number,
     lotSize: Number,
     rooms: Number,
@@ -79,6 +80,7 @@ const PropertySchema = new mongoose.Schema(
     exteriorMaterial: String,
     structureType: String,
     floorsNo: Number,
+    propertyStatus: String,
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
