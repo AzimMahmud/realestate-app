@@ -15,6 +15,11 @@ const getClientUrl = (req) => {
   const baseUrl = req.headers.clienturl;
   return baseUrl;
 };
+const getFileRootUrl = (req) => {
+  const rootUrl = req.protocol + "://" + req.get("host");
+  const uploadPath = `${rootUrl}/uploads`;
+  return uploadPath;
+};
 const dateId = () => {
   const id = Math.floor(Date.now());
   return id;
@@ -56,4 +61,5 @@ module.exports = {
   dateId,
   uniqId,
   getUserInfoByToken,
+  getFileRootUrl,
 };
