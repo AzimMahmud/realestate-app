@@ -9,7 +9,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 
 exports.photoUpload = asyncHandler(async (req, res, next) => {
-  console.log("req", req);
+
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file`, 400));
   }

@@ -1,53 +1,53 @@
-const mongoose = require("mongoose");
-const { default: slugify } = require("slugify");
-const geocoder = require("../utils/geocoder");
+const mongoose = require('mongoose');
+const { default: slugify } = require('slugify');
+const geocoder = require('../utils/geocoder');
 
 const PropertySchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Please add a title."],
+      required: [true, 'Please add a title.'],
       unique: true,
       trim: true,
-      maxlength: [50, "Title can not be more than 50 characters."],
+      maxlength: [50, 'Title can not be more than 50 characters.'],
     },
     slug: String,
     description: {
       type: String,
       trim: true,
-      maxlength: [250, "Description can not be more than 250 characters."],
+      maxlength: [250, 'Description can not be more than 250 characters.'],
     },
     category: {
       type: String,
-      required: [true, "Please select a category."],
-      enum: ["For Rent", "For Sale"],
+      required: [true, 'Please select a category.'],
+      // enum: ["For Rent", "For Sale"],
     },
     propertyType: {
       type: String,
-      required: [true, "Please select a property type."],
-      enum: ["Apartment", "House", "Land"],
+      required: [true, 'Please select a property type.'],
+      // enum: ["Apartment", "House", "Land"],
     },
     location: {
       // GeoJSON Point
       type: {
         type: String,
-        enum: ["Point"],
+        enum: ['Point'],
       },
       coordinates: {
         type: [Number],
-        index: "2dsphere",
+        index: '2dsphere',
       },
       formattedAddress: String,
       street: String,
       city: String,
       state: String,
-      zipcode: String,
+      zipCode: String,
       country: String,
     },
     averageRating: {
       type: Number,
-      min: [1, "Rating must be at least 1"],
-      max: [10, "Rating must can not be more than 10"],
+      min: [0, 'Rating must be at least 1'],
+      // max: [10, "Rating must can not be more than 10"],
     },
     price: Number,
     yearlyTaxRate: Number,
@@ -56,7 +56,7 @@ const PropertySchema = new mongoose.Schema(
     beforePriceLabel: Number,
     images: {
       type: [String],
-      required: [true, "Please upload at least one image"],
+      required: [true, 'Please upload at least one image'],
     },
     amenities: {
       type: [String],
@@ -64,36 +64,40 @@ const PropertySchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    videos: [],
     size: Number,
     lotSize: Number,
     rooms: Number,
     bedRooms: Number,
+    bathrooms: Number,
     customID: String,
     garages: Number,
     garageSize: Number,
     yearBuilt: Number,
-    availableForm: Date,
+    availableFrom: Date,
     basement: String,
     roofing: String,
     extraDetails: String,
     exteriorMaterial: String,
     structureType: String,
     floorsNo: Number,
+    propertyStatus: String,
+    notes: String,
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
-      required: true
-    }
+      required: true,
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 // Create Property slug from the name
-PropertySchema.pre("save", function (next) {
+PropertySchema.pre('save', function (next) {
   this.slug = slugify(this.title, {
     lower: true,
   });
@@ -101,7 +105,7 @@ PropertySchema.pre("save", function (next) {
   next();
 });
 
-// // Geocode & create location field
+// Geocode & create location field
 // PropertySchema.pre("save", async function (next) {
 //   console.log(this.address);
 //   const loc = await geocoder.geocode(this.address);
@@ -112,7 +116,7 @@ PropertySchema.pre("save", function (next) {
 //     street: loc[0].streetName,
 //     city: loc[0].city,
 //     state: loc[0].stateCode,
-//     zipcode: loc[0].zipcode,
+//     zipCode: loc[0].zipcode,
 //     country: loc[0].countryCode,
 //   };
 
@@ -122,7 +126,7 @@ PropertySchema.pre("save", function (next) {
 // });
 
 // Cascade delete reviews when a property is deleted
-PropertySchema.pre('remove', async function(next) {
+PropertySchema.pre('remove', async function (next) {
   console.log(`Reviews being removed from property ${this._id}`);
   await this.model('Review').deleteMany({ bootcamp: this._id });
   next();
@@ -133,9 +137,7 @@ PropertySchema.virtual('reviewies', {
   ref: 'Review',
   localField: '_id',
   foreignField: 'property',
-  justOne: false
+  justOne: false,
 });
 
-
-
-module.exports = mongoose.model("Property", PropertySchema);
+module.exports = mongoose.model('Property', PropertySchema);

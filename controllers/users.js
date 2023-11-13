@@ -1,6 +1,7 @@
-const ErrorResponse = require('../utils/errorResponse');
-const asyncHandler = require('../middleware/async');
-const User = require('../models/User');
+const ErrorResponse = require("../utils/errorResponse");
+const asyncHandler = require("../middleware/async");
+const User = require("../models/User");
+const { jsonFormat, getFileRootUrl } = require("../utils");
 
 // @desc      Get all users
 // @route     GET /api/v1/auth/users
@@ -14,10 +15,15 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 // @access    Private/Admin
 exports.getUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
+  const formattedUser = jsonFormat(user);
+  const jsonUser = {
+    ...formattedUser,
+    image: `${getFileRootUrl(req)}/${formattedUser.photoUrl}`,
+  };
 
   res.status(200).json({
     success: true,
-    data: user
+    data: jsonUser,
   });
 });
 
@@ -25,11 +31,12 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/auth/users
 // @access    Private/Admin
 exports.createUser = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
   const user = await User.create(req.body);
 
   res.status(201).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -39,12 +46,12 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 exports.updateUser = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -56,6 +63,6 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: {}
+    data: {},
   });
 });

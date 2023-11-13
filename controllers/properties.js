@@ -1,17 +1,31 @@
-const path = require("path");
-const asyncHandler = require("../middleware/async");
-const Property = require("../models/Property");
-const ErrorResponse = require("../utils/errorResponse");
-const geocoder = require("../utils/geocoder");
+const path = require('path');
+const asyncHandler = require('../middleware/async');
+const Property = require('../models/Property');
+const ErrorResponse = require('../utils/errorResponse');
+const geocoder = require('../utils/geocoder');
+const { getUserInfoByToken } = require('../utils');
 
 // @desc       Get all Properties
 // @route      GET /api/v1/properties
 // @access     Public
 exports.getProperties = asyncHandler(async (req, res, next) => {
   console.log(res.advancedResults);
+
   res.status(200).json({
     success: true,
-    data: res.advancedResults
+    data: res.advancedResults,
+  });
+});
+
+// @desc       Get all Properties by user
+// @route      GET /api/v1/properties/users
+// @access     Public
+exports.getPropertiesByUser = asyncHandler(async (req, res, next) => {
+  console.log(res.advancedResults);
+
+  res.status(200).json({
+    success: true,
+    data: res.advancedResults,
   });
 });
 
@@ -29,7 +43,7 @@ exports.getProperty = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: property
+    data: property,
   });
 });
 
@@ -37,14 +51,20 @@ exports.getProperty = asyncHandler(async (req, res, next) => {
 // @route      POST /api/v1/properties
 // @access     Private
 exports.createProperty = asyncHandler(async (req, res, next) => {
-  console.log(req.body);
-  const { _id } = await Property.create(req.body);
+  const userId = await getUserInfoByToken(req);
+  console.log('userId', userId);
+
+  const submitObj = {
+    ...req.body,
+    user: userId,
+  };
+  const { _id } = await Property.create(submitObj);
   res.status(201).json({
     success: true,
-    message: "Create new property",
+    message: 'Create new property',
     data: {
-      id: _id
-    }
+      id: _id,
+    },
   });
 });
 
@@ -54,7 +74,7 @@ exports.createProperty = asyncHandler(async (req, res, next) => {
 exports.updateProperty = asyncHandler(async (req, res, next) => {
   const property = await Property.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   if (!property) {
@@ -66,13 +86,13 @@ exports.updateProperty = asyncHandler(async (req, res, next) => {
   if (!property) {
     res.status(400).json({
       success: false,
-      message: "Data not found"
+      message: 'Data not found',
     });
   }
 
   res.status(201).json({
     success: true,
-    data: property
+    data: property,
   });
 });
 
@@ -88,11 +108,11 @@ exports.deleteProperty = asyncHandler(async (req, res, next) => {
     );
   }
 
-  property.remove();
+  property.deleteOne();
 
   res.status(201).json({
     success: true,
-    message: "Deleted successfully"
+    message: 'Deleted successfully',
   });
 });
 
@@ -115,21 +135,21 @@ exports.getPropertiesWithInRadius = asyncHandler(async (req, res, next) => {
   const properties = await Property.find({
     location: {
       $geoWithin: {
-        $centerSphere: [[lon, lat], radius]
-      }
-    }
+        $centerSphere: [[lon, lat], radius],
+      },
+    },
   });
 
   if (!properties) {
     res.status(400).json({
       success: false,
-      message: "Data not found"
+      message: 'Data not found',
     });
   }
 
   res.status(200).json({
     success: true,
-    data: properties
+    data: properties,
   });
 });
 
@@ -152,7 +172,7 @@ exports.propertyPhotoUpload = asyncHandler(async (req, res, next) => {
   const file = req.files.files;
 
   // Make sure the image is photo
-  if (!file.mimetype.startsWith("image")) {
+  if (!file.mimetype.startsWith('image')) {
     return next(new ErrorResponse(`Please upload an image file`, 400));
   }
 
@@ -179,8 +199,8 @@ exports.propertyPhotoUpload = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "File uploaded successfully",
-      data: file.name
+      message: 'File uploaded successfully',
+      data: file.name,
     });
   });
 });

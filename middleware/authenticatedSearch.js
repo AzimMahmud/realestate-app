@@ -1,14 +1,16 @@
 /** @format */
+const { getUserInfoByToken } = require("../utils");
+const authenticatedSearch = (model, populate) => async (req, res, next) => {
+  const userId = await getUserInfoByToken(req);
 
-const advancedResults = (model, populate) => async (req, res, next) => {
   let query;
 
   console.log(req.query);
   // Copy req.query
-  const reqQuery = { ...req.query };
+  const reqQuery = { ...req.query, user: userId };
 
   // Fields to exclude
-  const removeFields = ['select', 'sort', 'page', 'limit'];
+  const removeFields = ["select", "sort", "page", "limit"];
 
   // Loop over removeFields and delete them from reqQuery
   removeFields.forEach((param) => delete reqQuery[param]);
@@ -27,17 +29,17 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // Select Fields
   if (req.query.select) {
-    const fields = req.query.select.split(',').join(' ');
+    const fields = req.query.select.split(",").join(" ");
     query = query.select(fields);
   }
 
   // Sort
   if (req.query.sort) {
-    const sortBy = req.query.sort.split(',').join(' ');
+    const sortBy = req.query.sort.split(",").join(" ");
 
     query = query.sort(sortBy);
   } else {
-    query = query.sort('-createdAt');
+    query = query.sort("-createdAt");
   }
 
   // Pagination
@@ -84,4 +86,4 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   next();
 };
 
-module.exports = advancedResults;
+module.exports = authenticatedSearch;
