@@ -20,7 +20,7 @@ const authenticatedSearch = (model, populate) => async (req, res, next) => {
 
   // Create operators ($gt, $gte, etc)
   queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in|regex)\b/g,
+    /\b(gt|gte|lt|lte|in|text|search)\b/g,
     (match) => `$${match}`
   );
 

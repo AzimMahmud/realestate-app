@@ -96,7 +96,11 @@ const PropertySchema = new mongoose.Schema(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// Create Property slug from the name
+// Create Index for title full text search
+PropertySchema.index({ title : 'text'});
+
+
+// Create Property slug from the title
 PropertySchema.pre('save', function (next) {
   this.slug = slugify(this.title, {
     lower: true,
