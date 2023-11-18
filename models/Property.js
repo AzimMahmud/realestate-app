@@ -1,41 +1,41 @@
-const mongoose = require('mongoose');
-const { default: slugify } = require('slugify');
-const geocoder = require('../utils/geocoder');
+const mongoose = require("mongoose");
+const { default: slugify } = require("slugify");
+const geocoder = require("../utils/geocoder");
 
 const PropertySchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, 'Please add a title.'],
+      required: [true, "Please add a title."],
       unique: true,
       trim: true,
-      maxlength: [50, 'Title can not be more than 50 characters.'],
+      maxlength: [50, "Title can not be more than 50 characters."],
     },
     slug: String,
     description: {
       type: String,
       trim: true,
-      maxlength: [250, 'Description can not be more than 250 characters.'],
+      maxlength: [250, "Description can not be more than 250 characters."],
     },
     category: {
       type: String,
-      required: [true, 'Please select a category.'],
+      required: [true, "Please select a category."],
       // enum: ["For Rent", "For Sale"],
     },
     propertyType: {
       type: String,
-      required: [true, 'Please select a property type.'],
+      required: [true, "Please select a property type."],
       // enum: ["Apartment", "House", "Land"],
     },
     location: {
       // GeoJSON Point
       type: {
         type: String,
-        enum: ['Point'],
+        enum: ["Point"],
       },
       coordinates: {
         type: [Number],
-        index: '2dsphere',
+        index: "2dsphere",
       },
       formattedAddress: String,
       street: String,
@@ -46,7 +46,7 @@ const PropertySchema = new mongoose.Schema(
     },
     averageRating: {
       type: Number,
-      min: [0, 'Rating must be at least 1'],
+      min: [0, "Rating must be at least 1"],
       // max: [10, "Rating must can not be more than 10"],
     },
     price: Number,
@@ -56,7 +56,7 @@ const PropertySchema = new mongoose.Schema(
     beforePriceLabel: Number,
     images: {
       type: [String],
-      required: [true, 'Please upload at least one image'],
+      required: [true, "Please upload at least one image"],
     },
     amenities: {
       type: [String],
@@ -89,19 +89,18 @@ const PropertySchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
 // Create Index for title full text search
-PropertySchema.index({ title : 'text'});
-
+PropertySchema.index({ title: "text" });
 
 // Create Property slug from the title
-PropertySchema.pre('save', function (next) {
+PropertySchema.pre("save", function (next) {
   this.slug = slugify(this.title, {
     lower: true,
   });
@@ -130,18 +129,18 @@ PropertySchema.pre('save', function (next) {
 // });
 
 // Cascade delete reviews when a property is deleted
-PropertySchema.pre('remove', async function (next) {
+PropertySchema.pre("remove", async function (next) {
   console.log(`Reviews being removed from property ${this._id}`);
-  await this.model('Review').deleteMany({ bootcamp: this._id });
+  await this.model("Review").deleteMany({ bootcamp: this._id });
   next();
 });
 
 // Reverse populate with virtuals
-PropertySchema.virtual('reviewies', {
-  ref: 'Review',
-  localField: '_id',
-  foreignField: 'property',
+PropertySchema.virtual("reviewies", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "property",
   justOne: false,
 });
 
-module.exports = mongoose.model('Property', PropertySchema);
+module.exports = mongoose.model("Property", PropertySchema);
