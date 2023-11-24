@@ -144,4 +144,12 @@ PropertySchema.virtual('reviewies', {
   justOne: false,
 });
 
+// Reverse populate with virtuals
+PropertySchema.virtual('schedules', {
+  ref: 'Schedule',
+  localField: '_id',
+  foreignField: 'property',
+  justOne: false,
+});
+
 module.exports = mongoose.model('Property', PropertySchema);

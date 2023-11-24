@@ -59,7 +59,8 @@ exports.addReview = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
+  req.body.property = req.params.propertyId;
+  
   const review = await Review.create(req.body);
 
   res.status(201).json({
