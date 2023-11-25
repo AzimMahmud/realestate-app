@@ -1,9 +1,11 @@
 /** @format */
 
+const { json } = require("express");
+
 const advancedResults = (model, populate) => async (req, res, next) => {
   let query;
 
-  console.log(req.query);
+
   // Copy req.query
   const reqQuery = { ...req.query };
 
@@ -16,12 +18,13 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   // Create query string
   let queryStr = JSON.stringify(reqQuery);
 
- 
   // Create operators ($gt, $gte, etc)
   queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in|text|search)\b/g,
+    /\b(gt|gte|lt|lte|in|text|search|regex|options)\b/g,
     (match) => `$${match}`
   );
+
+console.log(queryStr);
 
   // Finding resource
   query = model.find(JSON.parse(queryStr));
