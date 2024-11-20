@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const FileSchema = new mongoose.Schema({
   fileUrl: String,
+  fileName: String,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -12,4 +13,4 @@ const FileSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Files', FileSchema);
+module.exports = mongoose.model("Files", FileSchema);

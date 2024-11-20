@@ -7,9 +7,9 @@ const fs = require("fs");
 const { uniqId } = require("../utils");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
+const fileUpload = require("express-fileupload");
 
 exports.photoUpload = asyncHandler(async (req, res, next) => {
-
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file`, 400));
   }
@@ -24,22 +24,25 @@ exports.photoUpload = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
-        400
-      )
+        400,
+      ),
     );
   }
 
   console.log(file);
 
   //Create Custom File Name
-  file.name = `photo_${uniqId()}${path.parse(file.name).ext}`;
+  file.urlName = `photo_${uniqId()}${path.parse(file.name).ext}`;
 
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.urlName}`, async (err) => {
     if (err) {
       return next(new ErrorResponse(`Problem with file upload `, 500));
     }
 
-    const uploadedFile = await File.create({ fileUrl: file.name });
+    const uploadedFile = await File.create({
+      fileUrl: file.urlName,
+      fileName: file.name,
+    });
 
     res.status(200).json({
       success: true,
@@ -63,8 +66,8 @@ exports.photoNextUpload = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
-        400
-      )
+        400,
+      ),
     );
   }
 
@@ -108,6 +111,7 @@ exports.removeFile = asyncHandler(async (req, res, next) => {
 // @route   /api/v1/fileUpload
 // @access   Public
 exports.getAllFiles = asyncHandler(async (req, res, next) => {
+  // await File.updateMany({}, { fileName: "Bangaldesh" });
   ///see the route
   res.status(200).json(res.advancedResults);
 });
